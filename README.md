@@ -1,4 +1,4 @@
-# Projeto Monorepo - Qualidade de Software
+# Projeto  Qualidade de Software
 
 ## Estrutura
 
