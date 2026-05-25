@@ -1,44 +1,15 @@
-name: CI
+name: Frontend CI
 
 on:
   push:
     branches:
       - main
+
   pull_request:
     branches:
       - "**"
 
 jobs:
-  backend:
-    runs-on: ubuntu-latest
-
-    defaults:
-      run:
-        working-directory: biblioteca-backend
-
-    services:
-      mongo:
-        image: mongo:7
-        ports:
-          - 27017:27017
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Configurar Java 21
-        uses: actions/setup-java@v4
-        with:
-          distribution: temurin
-          java-version: 21
-          cache: maven
-
-      - name: Permitir execução Maven Wrapper
-        run: chmod +x mvnw
-
-      - name: Executar testes backend
-        run: ./mvnw clean test
-
   frontend:
     runs-on: ubuntu-latest
 
@@ -63,5 +34,5 @@ jobs:
       - name: Build frontend
         run: npm run build
 
-      - name: Rodar testes CI
+      - name: Rodar testes frontend
         run: npm run test:ci

@@ -11,15 +11,18 @@ export function useLivros() {
   async function listarLivros() {
     try {
       setCarregando(true)
+
       const resposta = await api.get('/livros')
+
       setLivros(resposta.data)
+
     } catch {
       setMensagem('Erro ao carregar livros.')
+
     } finally {
       setCarregando(false)
     }
   }
-
 
   async function pesquisarLivros(termo: string) {
     try {
@@ -31,10 +34,31 @@ export function useLivros() {
         return
       }
 
-      const resposta = await api.get(`/livros/pesquisar?termo=${termo}`)
-      setLivros(resposta.data)
+      const respostaTitulo = await api.get(
+        `/livros/buscar/titulo?titulo=${termo}`
+)
+
+const respostaAutor = await api.get(
+`/livros/buscar/autor?autor=${termo}`
+)
+
+const livrosUnicos = [
+...respostaTitulo.data,
+
+...respostaAutor.data.filter(
+          (livroAutor: Livro) =>
+            !respostaTitulo.data.some(
+              (livroTitulo: Livro) =>
+                livroTitulo.id === livroAutor.id
+)
+)
+]
+
+setLivros(livrosUnicos)
+
     } catch {
       setMensagem('Erro ao pesquisar livros.')
+
     } finally {
       setCarregando(false)
     }
@@ -61,10 +85,13 @@ export function useLivros() {
       }
 
       listarLivros()
+
       return true
+
     } catch (erro: any) {
       setMensagem(erro.message)
       return false
+
     } finally {
       setCarregando(false)
     }
@@ -73,11 +100,16 @@ export function useLivros() {
   async function removerLivro(id: string) {
     try {
       setCarregando(true)
+
       await api.delete(`/livros/${id}`)
+
       setMensagem('Livro removido com sucesso.')
+
       listarLivros()
+
     } catch {
       setMensagem('Erro ao remover livro.')
+
     } finally {
       setCarregando(false)
     }
